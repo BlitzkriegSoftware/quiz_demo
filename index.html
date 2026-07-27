@@ -54,6 +54,9 @@
       .actionbutton {
         margin: 8px 0 8px 0;
       }
+      .text-end {
+        vertical-align: middle;
+      }
     </style>
   </head>
   <body>
@@ -69,10 +72,12 @@
             hx-include="#nextq"
             hx-include="#score"
             hx-target="#result"
-            class="btn btn-secondary actionbutton"
+            class="btn btn-primary actionbutton"
           >
             New Game
           </button>
+        </div>
+        <div class="btn-group" role="group">
           <button
             id="print"
             hx-get="print"
@@ -84,14 +89,20 @@
           >
             Print
           </button>
-          <h4 class="text-end">Score: <span id="dscore">0</span></h4>
+        </div>
+        <div class="btn-group" role="group">
+          <button id="scoreButton" class="btn btn-info actionbutton">
+            Score: <span id="dscore">0</span>
+          </button>
         </div>
       </form>
 
       <div id="result"></div>
-      <input type="hidden" id="bdone" value="0" />
-      <input type="hidden" id="nextq" value="0" />
-      <input type="hidden" id="score" value="0" />
+      <div id="vars">
+        <input type="hidden" id="bdone" value="0" />
+        <input type="hidden" id="nextq" value="0" />
+        <input type="hidden" id="score" value="0" />
+      </div>
     </div>
 
     <script>

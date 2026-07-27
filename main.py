@@ -149,26 +149,27 @@ def end_of_quiz(score: str) -> str:
 
 def next_question(nextq: str, score: str, msg: str) -> GuessResult:
     quiz = quizGet()
-    nq = safe_int(nextq)
+    iNextQ = safe_int(nextq)
+    if iNextQ < 0:
+        iNextQ = 0
     qlen: int = len(quiz) - 1
-    if nq > qlen:
+    if iNextQ > qlen:
         html = end_of_quiz(score)
         if len(msg) > 0:
             html = f"<h3>{msg}</h3>" + html
-        return GuessResult(html, nq, 1)
+        return GuessResult(html, iNextQ, 1)
     else:
-        nq = nq + 1
-        html = question_as_html(nq)
+        html = question_as_html(iNextQ)
         if len(msg) > 0:
-            html = f"<h3>{msg}, score: {score}</h3>" + html
-        return GuessResult(html, nq, 0)
+            html = f"<h3>{msg}</h3>" + html
+        return GuessResult(html, iNextQ, 0)
 
 
 def add_header(response: Response, nextq: str, score: str, bdone: str):
     if len(score.strip()) <= 0:
         score = "0"
     if len(nextq.strip()) <= 0:
-        nextq = "-1"
+        nextq = "0"
     if len(bdone.strip()) <= 0:
         bdone = "0"
 
@@ -180,26 +181,31 @@ def add_header(response: Response, nextq: str, score: str, bdone: str):
 
 @app.post("/guess", response_class=HTMLResponse)
 def guess(
-    request: Request,
     response: Response,
-    nextq: Annotated[str | None, Form()] = "-1",
+    nextq: Annotated[str | None, Form()] = "0",
     score: Annotated[str | None, Form()] = "0",
     bdone: Annotated[str | None, Form()] = "0",
-    choice: Annotated[str | None, Form()] = "-1",
+    choic: Annotated[str | None, Form()] = "0",
 ):
     # print(request)
     quiz = quizGet()
-    iChoice = safe_int(choice)
-    iNextQ = safe_int(nextq)
-    tq = quiz[iNextQ]
-    iCorrectAnswer = safe_int(tq.correct_answer.choice)
     iScore = safe_int(score)
+    iChoice = safe_int(choic)
+    iNextQ = safe_int(nextq)
+    if iNextQ < 0:
+        iNextQ = 0
+
+    tq = quiz[iNextQ]
+    sCorrectAnswer = tq.correct_answer.choice
+    sChoice = tq.answers[iChoice].choice
+
     msg = "Incorrect Answer"
-    if iChoice == iCorrectAnswer:
+    if sChoice == sCorrectAnswer:
         iScore = iScore + 1
         msg = "Correct Answer"
 
-    result = next_question(str(iNextQ), str(score), msg)
+    iNextQ = iNextQ + 1
+    result = next_question(str(iNextQ), str(iScore), msg)
     bdone = "0" if result.isDone else "1"
     add_header(response, str(iNextQ), str(iScore), bdone)
     return result.html
@@ -208,11 +214,11 @@ def guess(
 @app.post("/new", response_class=HTMLResponse)
 def new_game(
     response: Response,
-    nextq: Annotated[str | None, Form()] = "-1",
+    nextq: Annotated[str | None, Form()] = "0",
     score: Annotated[str | None, Form()] = "0",
     bdone: Annotated[str | None, Form()] = "0",
 ):
-    nextq = "1"
+    nextq = "0"
     score = "0"
     result = next_question(nextq, score, "")
     bdone = "0" if result.isDone else "1"
@@ -223,7 +229,7 @@ def new_game(
 @app.get("/print", response_class=HTMLResponse)
 def all_quiz(
     response: Response,
-    nextq: Annotated[str | None, Form()] = "-1",
+    nextq: Annotated[str | None, Form()] = "0",
     score: Annotated[str | None, Form()] = "0",
     bdone: Annotated[str | None, Form()] = "0",
 ):

@@ -9,7 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "cwd":"${workspaceFolder}",
-            "program": "${file}",
+            "program": "main.py",
             "console": "integratedTerminal"
         }
     ]
