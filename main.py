@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Annotated, List
 from fastapi.responses import HTMLResponse
 import uvicorn
-from fastapi import FastAPI, Form, Response
+from fastapi import FastAPI, Form, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, field_validator
 from functools import cache
@@ -16,12 +16,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["hx-trigger"],
 )
 
 
 class GuessResult:
-    def __init__(self, html: str, isDone: int):
+    def __init__(self, html: str, qid: int, isDone: int):
         self.html = html
+        self.qid = qid
         self.isDone = isDone
 
 
@@ -73,7 +75,7 @@ def quizGet():
     return quiz
 
 
-def html_quiz() -> str:
+def quiz_as_html() -> str:
     quiz = quizGet()
     html = ""
     for i, q in enumerate(quiz, start=1):
@@ -86,7 +88,7 @@ def html_quiz() -> str:
     return html
 
 
-def print_quiz():
+def quiz_as_text():
     quiz = quizGet()
     for i, q in enumerate(quiz, start=1):
         print(f"{i}. {q.question.strip()}")
@@ -96,38 +98,44 @@ def print_quiz():
         print(f"   -> correct: {q.correct_answer.choice}\n")
 
 
-def make_answer_button(index: int):
+def make_answer_button(index: int, caption: str):
+    json = "{ "
+    json += "choice:"
+    json += str(index)
+    json += " }"
+
     html = "<button"
-    html += f" id='guess+{index}'"
-    html += " class='btn btn-secondary btn-sm actionbutton'"
-    html += " hx-post'/guess'"
+    html += f" id='guess-{index}'"
+    html += " class='btn btn-secondary btn-sm btn-info actionbutton'"
+    html += " hx-post='guess'"
+    html += f'hx-vals="js:{json}"'
+    html += " hx-include='#bdone'"
     html += " hx-include='#nextq'"
     html += " hx-include='#score'"
     html += " hx-target='#result'"
     html += ">"
-    html += f"{index}"
+    html += caption
     html += "</button> "
     return html
 
 
-def format_question(index: int) -> str:
+def question_as_html(index: int) -> str:
     quiz = quizGet()
     it = quiz[index]
-    html = "<div class='quizbody'>"
+    html = ""
+    html += "<div class='quizbody'>"
     html += "  <div class='quizquestion'>"
     html += it.question
     html += "  </div>"
     html += "  <div class='quizanswers'>"
     html += "    Select from one of these answers:"
-    html += "    <ol>"
+    html += "    <ul>"
     for id, value in enumerate(it.answers):
-        html += "      "
-        html += make_answer_button(id)
-        html += f"      <li id='ans-{id}'>"
-        html += value.choice
+        html += f"<li id='ans-{id}'>"
+        html += make_answer_button(id, value.choice)
         html += "</li>"
-    html += "    </ol>"
-    html = "  </div>"
+    html += "    </ul>"
+    html += "  </div>"
     html += "</div>"
     return html
 
@@ -139,18 +147,24 @@ def end_of_quiz(score: str) -> str:
     return html
 
 
-def next_question(nextq: str, score: str) -> GuessResult:
+def next_question(nextq: str, score: str, msg: str) -> GuessResult:
     quiz = quizGet()
     nq = safe_int(nextq)
     qlen: int = len(quiz) - 1
     if nq > qlen:
-        return GuessResult(end_of_quiz(score), 1)
+        html = end_of_quiz(score)
+        if len(msg) > 0:
+            html = f"<h3>{msg}</h3>" + html
+        return GuessResult(html, nq, 1)
     else:
         nq = nq + 1
-        return GuessResult(format_question(nq), 0)
+        html = question_as_html(nq)
+        if len(msg) > 0:
+            html = f"<h3>{msg}, score: {score}</h3>" + html
+        return GuessResult(html, nq, 0)
 
 
-def add_header(response: Response, score: str, nextq: str, bdone):
+def add_header(response: Response, nextq: str, score: str, bdone: str):
     if len(score.strip()) <= 0:
         score = "0"
     if len(nextq.strip()) <= 0:
@@ -159,18 +173,36 @@ def add_header(response: Response, score: str, nextq: str, bdone):
         bdone = "0"
 
     response.headers["HX-Trigger"] = (
-        f'{{"updateState": {{"score":{score}, "nextq": {nextq}, "bdone": {bdone} }}}}'
+        f'{{"updateState": {{"nextq": {nextq}, "score":{score}, "bdone": {bdone} }}}}'
     )
     return
 
 
 @app.post("/guess", response_class=HTMLResponse)
 def guess(
+    request: Request,
     response: Response,
     nextq: Annotated[str | None, Form()] = "-1",
     score: Annotated[str | None, Form()] = "0",
     bdone: Annotated[str | None, Form()] = "0",
-): ...
+    choice: Annotated[str | None, Form()] = "-1",
+):
+    # print(request)
+    quiz = quizGet()
+    iChoice = safe_int(choice)
+    iNextQ = safe_int(nextq)
+    tq = quiz[iNextQ]
+    iCorrectAnswer = safe_int(tq.correct_answer.choice)
+    iScore = safe_int(score)
+    msg = "Incorrect Answer"
+    if iChoice == iCorrectAnswer:
+        iScore = iScore + 1
+        msg = "Correct Answer"
+
+    result = next_question(str(iNextQ), str(score), msg)
+    bdone = "0" if result.isDone else "1"
+    add_header(response, str(iNextQ), str(iScore), bdone)
+    return result.html
 
 
 @app.post("/new", response_class=HTMLResponse)
@@ -180,11 +212,11 @@ def new_game(
     score: Annotated[str | None, Form()] = "0",
     bdone: Annotated[str | None, Form()] = "0",
 ):
-    nextq = "-1"
+    nextq = "1"
     score = "0"
-    result = next_question(nextq, score)
+    result = next_question(nextq, score, "")
     bdone = "0" if result.isDone else "1"
-    add_header(response, score, nextq, bdone)
+    add_header(response, nextq, score, bdone)
     return result.html
 
 
@@ -195,7 +227,7 @@ def all_quiz(
     score: Annotated[str | None, Form()] = "0",
     bdone: Annotated[str | None, Form()] = "0",
 ):
-    return html_quiz()
+    return quiz_as_html()
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- if you change the port change these -->
     <base href="http://localhost:8084" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -50,6 +51,9 @@
         font-weight: bold;
         color: green;
       }
+      .actionbutton {
+        margin: 8px 0 8px 0;
+      }
     </style>
   </head>
   <body>
@@ -61,7 +65,6 @@
           <button
             id="newgame"
             hx-post="new"
-            hx-trigger="click"
             hx-include="#bdone"
             hx-include="#nextq"
             hx-include="#score"
@@ -81,6 +84,7 @@
           >
             Print
           </button>
+          <h4 class="text-end">Score: <span id="dscore">0</span></h4>
         </div>
       </form>
 
@@ -95,9 +99,10 @@
         json = event.detail.xhr.getResponseHeader("HX-Trigger");
         if (json != null) {
           obj = JSON.parse(json);
-          document.getElementById("bdone").value = obj.bdone;
-          document.getElementById("nextq").value = obj.nextq;
-          document.getElementById("score").value = obj.score;
+          document.getElementById("bdone").value = obj.updateState.bdone;
+          document.getElementById("nextq").value = obj.updateState.nextq;
+          document.getElementById("score").value = obj.updateState.score;
+          document.getElementById("dscore").innerText = obj.updateState.score;
         }
       });
       window.addEventListener("load", (event) => {});
