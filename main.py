@@ -77,11 +77,12 @@ def html_quiz() -> str:
     quiz = quizGet()
     html = ""
     for i, q in enumerate(quiz, start=1):
-        html += f"{i}. {q.question.strip()}"
+        html += f"{i}. {q.question.strip()}<br/><ul>"
         for a in q.answers:
             marker = "✓" if a.correct else " "
-            html += f"   [{marker}] {a.choice}"
-        html += f"   -> correct: {q.correct_answer.choice}\n"
+            html += f"<li>[{marker}] {a.choice}</li>"
+        html += "</ul>"
+        html += f"<p>correct: {q.correct_answer.choice}</p>"
     return html
 
 

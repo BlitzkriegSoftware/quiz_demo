@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <base href="http://localhost:8084" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Blitzkrieg Software Blank Page</title>
@@ -59,7 +60,7 @@
         <div class="btn-group" role="group">
           <button
             id="newgame"
-            hx-post="/new"
+            hx-post="new"
             hx-trigger="click"
             hx-include="#bdone"
             hx-include="#nextq"
@@ -71,7 +72,7 @@
           </button>
           <button
             id="print"
-            hx-get="/print"
+            hx-get="print"
             hx-include="#bdone"
             hx-include="#nextq"
             hx-include="#score"
@@ -87,8 +88,6 @@
       <input type="hidden" id="bdone" value="0" />
       <input type="hidden" id="nextq" value="0" />
       <input type="hidden" id="score" value="0" />
-      <!-- if you change the port correct this line -->
-      <input type="hidden" id="baseurl" value="http://localhost:8084" />
     </div>
 
     <script>
@@ -101,26 +100,7 @@
           document.getElementById("score").value = obj.score;
         }
       });
-      window.addEventListener("load", (event) => {
-        baseurl = document.getElementById("baseurl").value;
-        const buttons = document.querySelectorAll("button.actionbutton");
-        buttons.forEach((button) => {
-          for (const attr of button.attributes) {
-            // console.log(`${attr.name} = ${attr.value}`);
-            switch (attr.name.toLowerCase()) {
-              case "hx-get":
-              case "hx-post":
-              case "hx-put":
-              case "hx-delete":
-                if (!attr.value.includes("http")) {
-                  newUrl = baseurl + attr.value;
-                  button.setAttribute(attr.name, newUrl);
-                }
-                break;
-            }
-          }
-        });
-      });
+      window.addEventListener("load", (event) => {});
     </script>
     <!-- Bootstrap Bundle with Popper -->
     <script
