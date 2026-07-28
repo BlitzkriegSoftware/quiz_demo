@@ -57,6 +57,9 @@
       .text-end {
         vertical-align: middle;
       }
+      .debugtext {
+        font-weight: lighter;
+      }
     </style>
   </head>
   <body>
@@ -68,9 +71,7 @@
           <button
             id="newgame"
             hx-post="new"
-            hx-include="#bdone"
-            hx-include="#nextq"
-            hx-include="#score"
+            hx-include="#bdone, #nextq, #score"
             hx-target="#result"
             class="btn btn-primary actionbutton"
           >
@@ -81,9 +82,7 @@
           <button
             id="print"
             hx-get="print"
-            hx-include="#bdone"
-            hx-include="#nextq"
-            hx-include="#score"
+            hx-include="#bdone, #nextq, #score"
             hx-target="#result"
             class="btn btn-secondary actionbutton"
           >
@@ -96,16 +95,17 @@
           </button>
         </div>
       </form>
-
+      <div id="debug" class="debugtext"></div>
       <div id="result"></div>
       <div id="vars">
-        <input type="hidden" id="bdone" value="0" />
-        <input type="hidden" id="nextq" value="0" />
-        <input type="hidden" id="score" value="0" />
+        <input type="hidden" id="bdone" name="bdone" value="0" />
+        <input type="hidden" id="nextq" name="nextq" value="0" />
+        <input type="hidden" id="score" name="score" value="0" />
       </div>
     </div>
 
     <script>
+      const doDebug = true;
       document.addEventListener("htmx:afterRequest", function (event) {
         json = event.detail.xhr.getResponseHeader("HX-Trigger");
         if (json != null) {
@@ -113,7 +113,17 @@
           document.getElementById("bdone").value = obj.updateState.bdone;
           document.getElementById("nextq").value = obj.updateState.nextq;
           document.getElementById("score").value = obj.updateState.score;
+
           document.getElementById("dscore").innerText = obj.updateState.score;
+          if (doDebug) {
+            document.getElementById("debug").innerText =
+              "bdone: " +
+              obj.updateState.bdone +
+              ", nextq: " +
+              obj.updateState.nextq +
+              ", score: " +
+              obj.updateState.score;
+          }
         }
       });
       window.addEventListener("load", (event) => {});

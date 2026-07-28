@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse
 import uvicorn
 from fastapi import FastAPI, Form, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Form
 from pydantic import BaseModel, field_validator
 from functools import cache
 
@@ -99,19 +100,11 @@ def quiz_as_text():
 
 
 def make_answer_button(index: int, caption: str):
-    json = "{ "
-    json += "choice:"
-    json += str(index)
-    json += " }"
-
     html = "<button"
     html += f" id='guess-{index}'"
     html += " class='btn btn-secondary btn-sm btn-info actionbutton'"
-    html += " hx-post='guess'"
-    html += f'hx-vals="js:{json}"'
-    html += " hx-include='#bdone'"
-    html += " hx-include='#nextq'"
-    html += " hx-include='#score'"
+    html += f" hx-post='guess?choic={index}'"
+    html += " hx-include='#bdone, #nextq, #score'"
     html += " hx-target='#result'"
     html += ">"
     html += caption
@@ -180,17 +173,18 @@ def add_header(response: Response, nextq: str, score: str, bdone: str):
 
 
 @app.post("/guess", response_class=HTMLResponse)
-def guess(
+async def guess(
+    request: Request,
     response: Response,
-    nextq: Annotated[str | None, Form()] = "0",
-    score: Annotated[str | None, Form()] = "0",
-    bdone: Annotated[str | None, Form()] = "0",
-    choic: Annotated[str | None, Form()] = "0",
 ):
-    # print(request)
+    formData = await request.form()
+    bdone = formData.get("bdone")
+    nextq = formData.get("nextq")
+    score = formData.get("score")
     quiz = quizGet()
-    iScore = safe_int(score)
+    choic = request.query_params.get("choic")
     iChoice = safe_int(choic)
+    iScore = safe_int(score)
     iNextQ = safe_int(nextq)
     if iNextQ < 0:
         iNextQ = 0
@@ -206,22 +200,29 @@ def guess(
 
     iNextQ = iNextQ + 1
     result = next_question(str(iNextQ), str(iScore), msg)
-    bdone = "0" if result.isDone else "1"
+    bdone = "0"
+    if result.isDone > 0:
+        bdone = "1"
     add_header(response, str(iNextQ), str(iScore), bdone)
     return result.html
 
 
 @app.post("/new", response_class=HTMLResponse)
-def new_game(
+async def new_game(
+    request: Request,
     response: Response,
-    nextq: Annotated[str | None, Form()] = "0",
-    score: Annotated[str | None, Form()] = "0",
-    bdone: Annotated[str | None, Form()] = "0",
 ):
+    formData = await request.form()
+    bdone = formData.get("bdone")
+    nextq = formData.get("nextq")
+    score = formData.get("score")
+
     nextq = "0"
     score = "0"
     result = next_question(nextq, score, "")
-    bdone = "0" if result.isDone else "1"
+    bdone = "0"
+    if result.isDone > 0:
+        bdone = "1"
     add_header(response, nextq, score, bdone)
     return result.html
 
