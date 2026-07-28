@@ -84,13 +84,13 @@
             hx-get="print"
             hx-include="#bdone, #nextq, #score"
             hx-target="#result"
-            class="btn btn-secondary actionbutton"
+            class="btn btn-secondary actionbutton d-none"
           >
             Print
           </button>
         </div>
         <div class="btn-group" role="group">
-          <button id="scoreButton" class="btn btn-info actionbutton">
+          <button id="scoreButton" class="btn btn-info actionbutton" disabled>
             Score: <span id="dscore">0</span>
           </button>
         </div>
@@ -105,7 +105,7 @@
     </div>
 
     <script>
-      const doDebug = true;
+      const doDebug = false;
       document.addEventListener("htmx:afterRequest", function (event) {
         json = event.detail.xhr.getResponseHeader("HX-Trigger");
         if (json != null) {
