@@ -135,7 +135,7 @@ def question_as_html(index: int) -> str:
 
 def end_of_quiz(score: str) -> str:
     quiz = quizGet()
-    qlen: int = len(quiz) - 1
+    qlen: int = len(quiz)
     html = f"<div class='quizover'>Quiz Over! Score {score} out of {qlen}</div>"
     return html
 
