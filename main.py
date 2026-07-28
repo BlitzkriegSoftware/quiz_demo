@@ -6,7 +6,6 @@ from fastapi.responses import HTMLResponse
 import uvicorn
 from fastapi import FastAPI, Form, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Form
 from pydantic import BaseModel, field_validator
 from functools import cache
 
