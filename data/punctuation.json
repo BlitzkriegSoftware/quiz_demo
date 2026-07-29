@@ -1,0 +1,52 @@
+[
+  {
+    "question": "What is the correct name for '{' or '}'? ",
+    "answers": [
+      { "choice": "Parentheses", "correct": false },
+      { "choice": "Bracket", "correct": false },
+      { "choice": "Brace", "correct": true },
+      { "choice": "Squiggle", "correct": false },
+      { "choice": "Mustashes", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the correct name for '(' or ')'? ",
+    "answers": [
+      { "choice": "Parentheses", "correct": true },
+      { "choice": "Bracket", "correct": false },
+      { "choice": "Brace", "correct": false },
+      { "choice": "Squiggle", "correct": false },
+      { "choice": "Mustashes", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the correct name for '[' or ']'? ",
+    "answers": [
+      { "choice": "Parentheses", "correct": false },
+      { "choice": "Bracket", "correct": true },
+      { "choice": "Brace", "correct": false },
+      { "choice": "Squiggle", "correct": false },
+      { "choice": "Mustashes", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the correct name for '#'? ",
+    "answers": [
+      { "choice": "Hash", "correct": false },
+      { "choice": "Octothorpe", "correct": true },
+      { "choice": "Pound", "correct": false },
+      { "choice": "Tic-Tac", "correct": false },
+      { "choice": "Carrot", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the correct name for '^'? ",
+    "answers": [
+      { "choice": "Uppie", "correct": false },
+      { "choice": "Caret", "correct": true },
+      { "choice": "Pound", "correct": false },
+      { "choice": "Arrow-Up", "correct": false },
+      { "choice": "Carrot", "correct": false }
+    ]
+  }
+]

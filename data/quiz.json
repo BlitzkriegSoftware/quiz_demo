@@ -1,52 +1,102 @@
 [
   {
-    "question": "What is the correct name for '{' or '}'? ",
+    "question": "What is the only letter that doesn't appear in any U.S. state name?? ",
     "answers": [
-      { "choice": "Parentheses", "correct": false },
-      { "choice": "Bracket", "correct": false },
-      { "choice": "Brace", "correct": true },
-      { "choice": "Squiggle", "correct": false },
-      { "choice": "Mustashes", "correct": false }
+      { "choice": "Z", "correct": false },
+      { "choice": "Y", "correct": false },
+      { "choice": "Q", "correct": true },
+      { "choice": "B", "correct": false },
+      { "choice": "K", "correct": false }
     ]
   },
   {
-    "question": "What is the correct name for '(' or ')'? ",
+    "question": "How many hearts does an octopus have?? ",
     "answers": [
-      { "choice": "Parentheses", "correct": true },
-      { "choice": "Bracket", "correct": false },
-      { "choice": "Brace", "correct": false },
-      { "choice": "Squiggle", "correct": false },
-      { "choice": "Mustashes", "correct": false }
+      { "choice": "3", "correct": true },
+      { "choice": "1", "correct": false },
+      { "choice": "0", "correct": false },
+      { "choice": "2", "correct": false },
+      { "choice": "4", "correct": false }
     ]
   },
   {
-    "question": "What is the correct name for '[' or ']'? ",
+    "question": "How many years did the Hundred Years' War actually last?",
     "answers": [
-      { "choice": "Parentheses", "correct": false },
-      { "choice": "Bracket", "correct": true },
-      { "choice": "Brace", "correct": false },
-      { "choice": "Squiggle", "correct": false },
-      { "choice": "Mustashes", "correct": false }
+      { "choice": "101", "correct": false },
+      { "choice": "116", "correct": true },
+      { "choice": "87", "correct": false },
+      { "choice": "31", "correct": false },
+      { "choice": "131", "correct": false }
     ]
   },
   {
-    "question": "What is the correct name for '#'? ",
+    "question": "What is the most common letter in the English language?",
     "answers": [
-      { "choice": "Hash", "correct": false },
-      { "choice": "Octothorpe", "correct": true },
-      { "choice": "Pound", "correct": false },
-      { "choice": "Tic-Tac", "correct": false },
-      { "choice": "Carrot", "correct": false }
+      { "choice": "E", "correct": true },
+      { "choice": "A", "correct": false },
+      { "choice": "S", "correct": false },
+      { "choice": "R", "correct": false },
+      { "choice": "N", "correct": false }
     ]
   },
   {
-    "question": "What is the correct name for '^'? ",
+    "question": "What is the only continent with no active volcanoes?",
     "answers": [
-      { "choice": "Uppie", "correct": false },
-      { "choice": "Caret", "correct": true },
-      { "choice": "Pound", "correct": false },
-      { "choice": "Arrow-Up", "correct": false },
-      { "choice": "Carrot", "correct": false }
+      { "choice": "Asia", "correct": false },
+      { "choice": "North America", "correct": false },
+      { "choice": "Europe", "correct": false },
+      { "choice": "Australia", "correct": true },
+      { "choice": "Africa", "correct": false }
+    ]
+  },
+  {
+    "question": "What percentage of the Earth's water is fresh water?",
+    "answers": [
+      { "choice": "31%", "correct": false },
+      { "choice": "22%", "correct": false },
+      { "choice": "11%", "correct": false },
+      { "choice": "7%", "correct": false },
+      { "choice": "3%", "correct": true }
+    ]
+  },
+  {
+    "question": "What was the first toy to be advertised on television?",
+    "answers": [
+      { "choice": "Erector Set", "correct": false },
+      { "choice": "Mr. Potato Head", "correct": true },
+      { "choice": "Hungy Hungry Hippo", "correct": false },
+      { "choice": "Lincon Logs", "correct": false },
+      { "choice": "Lawn Darts", "correct": false }
+    ]
+  },
+  {
+    "question": "What animal can't stick out its tongue?",
+    "answers": [
+      { "choice": "Crocodile", "correct": true },
+      { "choice": "Deer", "correct": false },
+      { "choice": "Elephant", "correct": false },
+      { "choice": "Firefly", "correct": false },
+      { "choice": "Hippo", "correct": false }
+    ]
+  },
+  {
+    "question": "How many time zones does Russia span?",
+    "answers": [
+      { "choice": "3", "correct": false },
+      { "choice": "5", "correct": false },
+      { "choice": "7", "correct": false },
+      { "choice": "11", "correct": true },
+      { "choice": "12", "correct": false }
+    ]
+  },
+  {
+    "question": "What is the world's most expensive spice by weight?",
+    "answers": [
+      { "choice": "Saffron", "correct": true },
+      { "choice": "Pepper", "correct": false },
+      { "choice": "Cumin", "correct": false },
+      { "choice": "Nutmeg", "correct": false },
+      { "choice": "Cinnamon", "correct": false }
     ]
   }
 ]

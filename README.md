@@ -5,6 +5,7 @@ A Demo of HTMLX against a python FastAPI server
 - [quiz\_demo](#quiz_demo)
   - [Special thanks](#special-thanks)
   - [Sources](#sources)
+  - [Quiz Sources](#quiz-sources)
   - [How to run](#how-to-run)
     - [Debug .vscode/launch.json](#debug-vscodelaunchjson)
     - [Environment Variables](#environment-variables)
@@ -23,7 +24,10 @@ Here are the sources for this demo:
 - [Bootstrap](https://getbootstrap.com/)
 - [Icons](https://icons.getbootstrap.com/)
 - [Roboto Font](https://fonts.google.com/specimen/Roboto)
+
+## Quiz Sources
 - [Punctuation](https://en.wikipedia.org/wiki/List_of_typographical_symbols_and_punctuation_marks)
+- [Quiz Questions](https://quizado.com/blog/fun-trivia-questions)
   
 ## How to run
 
@@ -56,7 +60,6 @@ Here is the configuration snippet
     "console": "integratedTerminal"
 }
 ```
-
 
 ### Environment Variables
 
@@ -94,5 +97,5 @@ Notes:
 
 1. Question should end in a '?'
 2. Answers Array (try to keep it less than 10 entires)
-3. One choice should be marked `true` the other should be `false`
+3. One choice should be marked `"correct": true` the other should be `false`
 4. The array can safely be 3-300 questions
