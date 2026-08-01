@@ -1,14 +1,28 @@
+"""
+main Module
+=================
+Quiz Demo: HTMX + FastAPI
+
+Environment Variables:
+    - QUIZPORT: Port to listen on, please see README.md
+    - QUIZFILE: Path to Quiz JSON, just 'filename.json'
+"""
+
 import json
 import os
 from pathlib import Path
-from typing import Annotated, List
-from fastapi.responses import HTMLResponse
-import uvicorn
-from fastapi import FastAPI, Form, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
+from typing import List
 from pydantic import BaseModel, field_validator
+from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from functools import cache
+import uvicorn
 
+"""
+Must set a CORS policy, this one is not suitable for production!
+expose_headers must include the list of 'hx-' headers you plan to use!
+"""
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +35,15 @@ app.add_middleware(
 
 
 class GuessResult:
+    """
+    Class: payload containing needed state for processing
+
+    Args:
+        html: markup to return to client
+        qid: question id
+        isDone: Is quiz over? 0 if not, 1 is so
+    """
+
     def __init__(self, html: str, qid: int, isDone: int):
         self.html = html
         self.qid = qid
@@ -28,11 +51,27 @@ class GuessResult:
 
 
 class Answer(BaseModel):
+    """
+    Class: Answer
+
+    Args:
+        choice: text of the potential answer
+        correct: bool true if this is the answer, false if not
+    """
+
     choice: str
     correct: bool
 
 
 class Question(BaseModel):
+    """
+    Class: Question
+
+    Args:
+        question: text of the question
+        answers: potential answers only 1 can be correct
+    """
+
     question: str
     answers: List[Answer]
 
@@ -41,6 +80,13 @@ class Question(BaseModel):
     def must_have_exactly_one_correct_answer(
         cls, answers: List[Answer]
     ) -> List[Answer]:
+        """
+        Validates that answer is well formed
+
+        Args:
+            cls: instance
+            answers: list of answers
+        """
         correct_count = sum(a.correct for a in answers)
         if correct_count != 1:
             raise ValueError(
@@ -50,10 +96,23 @@ class Question(BaseModel):
 
     @property
     def correct_answer(self) -> Answer:
+        """
+        Select correct answer
+        """
         return next(a for a in self.answers if a.correct)
 
 
 def safe_int(value, default=0):
+    """
+    Function to safely convert a string to a number, with default if unsuccessful
+
+    Args:
+        value: to be converted
+        default: value if unsuccessful
+
+    Returns:
+        converted int
+    """
     try:
         return int(value)
     except (ValueError, TypeError):
@@ -61,21 +120,55 @@ def safe_int(value, default=0):
 
 
 def load_quiz(path: str | Path) -> List[Question]:
-    """Load a quiz JSON file into a list of Question instances."""
+    """
+    Load a quiz JSON file into a list of Question instances.
+
+    Args:
+        path: path to quiz JSON file
+
+    Returns:
+        Quiz as an array of Questions
+    """
     data = json.loads(Path(path).read_text())
     return [Question.model_validate(item) for item in data]
 
 
-@cache
-def quizGet():
-    quizfile = os.getenv("QUIZFILE", "quiz.json")
+def quizFromDisk(quizfile: str | Path) -> List[Question]:
+    """
+    Gets a quiz from disk but only from data/ folder
+
+    Args:
+        quizfile: just filename of quiz
+
+    Returns:
+        Quiz as an array of Questions
+    """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     quizfilepath = os.path.join(script_dir, "data", quizfile)
     quiz = load_quiz(quizfilepath)
     return quiz
 
 
+@cache
+def quizGet() -> List[Question]:
+    """
+    Get current quiz (cached)
+
+    Returns:
+        Quiz as an array of Questions
+    """
+    quizfile = os.getenv("QUIZFILE", "quiz.json")
+    quiz = quizFromDisk(quizfile)
+    return quiz
+
+
 def quiz_as_html() -> str:
+    """
+    Render quiz as an HTML snippet to be returned to UI
+
+    Returns:
+        HTML Markup Snippet
+    """
     quiz = quizGet()
     html = ""
     for i, q in enumerate(quiz, start=1):
@@ -89,6 +182,9 @@ def quiz_as_html() -> str:
 
 
 def quiz_as_text():
+    """
+    Prints the quiz as formatted text
+    """
     quiz = quizGet()
     for i, q in enumerate(quiz, start=1):
         print(f"{i}. {q.question.strip()}")
@@ -98,7 +194,17 @@ def quiz_as_text():
         print(f"   -> correct: {q.correct_answer.choice}\n")
 
 
-def make_answer_button(index: int, caption: str):
+def make_answer_button(index: int, caption: str) -> str:
+    """
+    Make a button representing the potential answer to a question
+
+    Args:
+        index: index of answer (zero to ...) to make elements unique
+        caption: for the button
+
+    Returns:
+        HTML Markup Snippet of the Button
+    """
     html = "<button"
     html += f" id='guess-{index}'"
     html += " class='btn btn-secondary btn-sm btn-info actionbutton'"
@@ -112,6 +218,15 @@ def make_answer_button(index: int, caption: str):
 
 
 def question_as_html(index: int) -> str:
+    """
+    Render the question as html
+
+    Args:
+        index: which quiz question (0...)
+
+    Returns:
+        HTML Snippet of Question and Choicess
+    """
     quiz = quizGet()
     it = quiz[index]
     html = ""
@@ -133,6 +248,15 @@ def question_as_html(index: int) -> str:
 
 
 def end_of_quiz(score: str) -> str:
+    """
+    Message for the end of the quiz, w. score
+
+    Args:
+        score: current score
+
+    Returns:
+        HTML Snippet for End of Quiz
+    """
     quiz = quizGet()
     qlen: int = len(quiz)
     html = f"<div class='quizover'>Quiz Over! Score {score} out of {qlen}</div>"
@@ -140,6 +264,17 @@ def end_of_quiz(score: str) -> str:
 
 
 def next_question(nextq: str, score: str, msg: str) -> GuessResult:
+    """
+    Get next question or end of quiz
+
+    Args:
+        nextq: next question
+        score: score
+        msg: (optional) message to return
+
+    Returns:
+        Instance of GuessResult
+    """
     quiz = quizGet()
     iNextQ = safe_int(nextq)
     if iNextQ < 0:
@@ -158,6 +293,15 @@ def next_question(nextq: str, score: str, msg: str) -> GuessResult:
 
 
 def add_header(response: Response, nextq: str, score: str, bdone: str):
+    """
+    create a well formed html header from state variables
+
+    Args:
+        response: (fastapi)
+        nextq: next question
+        score: (sic)
+        bdone: 0=not, 1=done
+    """
     if len(score.strip()) <= 0:
         score = "0"
     if len(nextq.strip()) <= 0:
@@ -175,7 +319,17 @@ def add_header(response: Response, nextq: str, score: str, bdone: str):
 async def guess(
     request: Request,
     response: Response,
-):
+) -> str:
+    """
+    post /guess: logic to see if guess is correct
+
+    Args:
+        request: (fastapi)
+        response: (fastapi)
+
+    Returns:
+        HTML Snippet of the result of the guess
+    """
     formData = await request.form()
     bdone = formData.get("bdone")
     nextq = formData.get("nextq")
@@ -210,7 +364,17 @@ async def guess(
 async def new_game(
     request: Request,
     response: Response,
-):
+) -> str:
+    """
+    post /new: start a new game
+
+    Args:
+        request (Request): FastAPI Request
+        response (Response): FastAPI Reponse
+
+    Returns:
+        str: HTML Snippet
+    """
     formData = await request.form()
     bdone = formData.get("bdone")
     nextq = formData.get("nextq")
@@ -227,7 +391,13 @@ async def new_game(
 
 
 @app.get("/print", response_class=HTMLResponse)
-def all_quiz(response: Response):
+def all_quiz(response: Response) -> str:
+    """
+    get /print: return quiz as html
+
+    Args:
+        response: (fastapi)
+    """
     return quiz_as_html()
 
 

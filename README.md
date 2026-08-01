@@ -10,6 +10,9 @@ A Demo of HTMLX against a python FastAPI server
     - [Debug .vscode/launch.json](#debug-vscodelaunchjson)
     - [Environment Variables](#environment-variables)
   - [Quiz File Format](#quiz-file-format)
+  - [Documentation: Sphinx](#documentation-sphinx)
+    - [Generating Documentation](#generating-documentation)
+    - [Live HTML documentation](#live-html-documentation)
 
 ## Special thanks
 
@@ -26,25 +29,31 @@ Here are the sources for this demo:
 - [Roboto Font](https://fonts.google.com/specimen/Roboto)
 
 ## Quiz Sources
+
 - [Punctuation](https://en.wikipedia.org/wiki/List_of_typographical_symbols_and_punctuation_marks)
 - [Quiz Questions](https://quizado.com/blog/fun-trivia-questions)
   
 ## How to run
 
-1. Optionally restore packages with:
+- Activate python environment
+
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
+  ```
+
+- Restore packages with:
 
   ```powershell
   uv sync
   ```
 
-2. Then
+- Then
 
   ```powershell
   uv run main.py
   ```
-3. Open index.html in a browser
-
-Then open `index.html` in a browser (or live server).
+  
+- Open `index.html` in a browser (or live server).
 
 ### Debug .vscode/launch.json
 
@@ -99,3 +108,20 @@ Notes:
 2. Answers Array (try to keep it less than 10 entires)
 3. One choice should be marked `"correct": true` the other should be `false`
 4. The array can safely be 3-300 questions
+
+## Documentation: Sphinx
+
+- See:
+  - [sphinx-doc.org](https://www.sphinx-doc.org/en/master/index.html)
+
+### Generating Documentation
+
+```powershell
+uv run sphinx-build -M markdown docs/source docs/build
+```
+
+### Live HTML documentation
+
+```powershell
+uv run sphinx-autobuild docs/source docs/build/html
+```
