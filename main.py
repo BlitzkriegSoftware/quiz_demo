@@ -227,12 +227,7 @@ async def new_game(
 
 
 @app.get("/print", response_class=HTMLResponse)
-def all_quiz(
-    response: Response,
-    nextq: Annotated[str | None, Form()] = "0",
-    score: Annotated[str | None, Form()] = "0",
-    bdone: Annotated[str | None, Form()] = "0",
-):
+def all_quiz(response: Response):
     return quiz_as_html()
 
 
