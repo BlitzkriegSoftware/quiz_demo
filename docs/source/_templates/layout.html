@@ -1,0 +1,11 @@
+{% extends "!layout.html" %} {% block extrahead %} {{ super() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Finds the literal span within the navbar-brand div
+    var brandSpan = document.querySelector(".navbar-brand span");
+    if (brandSpan) {
+      brandSpan.textContent = "Blitzkrieg Software";
+    }
+  });
+</script>
+{% endblock %}

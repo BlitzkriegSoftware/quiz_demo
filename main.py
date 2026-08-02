@@ -297,7 +297,7 @@ def next_question(nextq: str, score: str, msg: str) -> GuessResult:
 
 def add_header(response: Response, nextq: str, score: str, bdone: str):
     """
-    create a well formed html header from state variables
+    create a well formed "HX-Trigger" header from state variables
 
     Args:
         response: (fastapi)

@@ -11,6 +11,7 @@ A Demo of HTMLX against a python FastAPI server
     - [Environment Variables](#environment-variables)
   - [Quiz File Format](#quiz-file-format)
   - [Documentation: Sphinx](#documentation-sphinx)
+    - [Clean output folder](#clean-output-folder)
     - [Generating Documentation](#generating-documentation)
     - [Live HTML documentation](#live-html-documentation)
 
@@ -23,10 +24,23 @@ A Demo of HTMLX against a python FastAPI server
 Here are the sources for this demo:
 
 - [FastAPI](https://fastapi.tiangolo.com/#run-it)
+  - My Favorite Pyhon Framework for REST APIs
 - [HTMLX](https://htmx.org/)
+  - Lightweight UI/UX library
 - [Bootstrap](https://getbootstrap.com/)
+  - My Favorite CSS Framework
 - [Icons](https://icons.getbootstrap.com/)
+  - Bootstrap Icons
 - [Roboto Font](https://fonts.google.com/specimen/Roboto)
+  - Google's exellent web font
+
+Tooling for Documentation:
+
+- [Sphinx](https://www.sphinx-doc.org/en/master/)
+  - Generate documentation for Pyhon Docstrings + Code
+- [Napolean](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/index.html)
+  - Support for Google Style Docstrings
+- [Google DocString Format](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings)
 
 ## Quiz Sources
 
@@ -113,6 +127,12 @@ Notes:
 
 - See:
   - [sphinx-doc.org](https://www.sphinx-doc.org/en/master/index.html)
+
+### Clean output folder
+
+```powershell
+ .\make.ps1 clean
+ ```
 
 ### Generating Documentation
 
