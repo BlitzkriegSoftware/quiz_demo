@@ -6,6 +6,11 @@
     if (brandSpan) {
       brandSpan.textContent = "Blitzkrieg Software";
     }
+    var logoImg = document.querySelector("#cs-nav img");
+    if (logoImg) {
+      logoImg.src = "_static/blogo.svg";
+      logoImg.alt = "Blitzkrieg Software Logo";
+    }
   });
 </script>
 {% endblock %}

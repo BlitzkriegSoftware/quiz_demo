@@ -39,7 +39,7 @@ napoleon_google_docstring = True
 html_theme = "conestack"
 
 # -- My Custom Logo The configuration path is relative to the conf.py directory
-html_logo = "_static/conestack.svg"
+html_logo = "_static/blogo.svg"
 
 # -- Replace title text
 html_title = "Quiz Demo Documentation"
