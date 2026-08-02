@@ -3,9 +3,12 @@ main Module
 =================
 Quiz Demo: HTMX + FastAPI
 
-Environment Variables:
-    - QUIZPORT: Port to listen on, please see README.md
-    - QUIZFILE: Path to Quiz JSON, just 'filename.json'
+
+Environment Variables
+
+    * QUIZPORT: Port to listen on, please see README.md
+    * QUIZFILE: Path to Quiz JSON, just 'filename.json'
+
 """
 
 import json

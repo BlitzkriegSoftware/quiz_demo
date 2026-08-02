@@ -8,6 +8,8 @@ quiz_demo documentation
 
 Quiz Demo: HTMX plus Python RestAPI = fun demo
 
+`README.md <https://github.com/BlitzkriegSoftware/quiz_demo/blob/main/README.md>`_ 
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:

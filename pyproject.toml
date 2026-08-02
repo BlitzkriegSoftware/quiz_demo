@@ -10,5 +10,7 @@ dependencies = [
     "python-multipart>=0.0.32",
     "sphinx>=9.1.0",
     "sphinx-autobuild>=2025.8.25",
+    "sphinx-conestack-theme>=1.1.1",
     "sphinx-markdown-builder>=0.6.10",
+    "sphinx-new-tab-link>=0.8.1",
 ]

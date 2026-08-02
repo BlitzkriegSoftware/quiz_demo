@@ -23,6 +23,8 @@ extensions = [
     "sphinx_markdown_builder",
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
+    "sphinx.ext.todo",
+    "sphinx_new_tab_link",
 ]
 
 templates_path = ["_templates"]
@@ -30,9 +32,10 @@ exclude_patterns = []
 
 # -- Options for Google format
 napoleon_google_docstring = True
+todo_include_todos = True
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "alabaster"
+html_theme = "conestack"
 html_static_path = ["_static"]
